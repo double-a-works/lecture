@@ -46,6 +46,65 @@ the *mechanism*, not the data.
    similar browser-automatable workflow — the CDP connection details
    (`cdp_ws.py`, `cdp_helpers.py`) are generic.
 
+## Quickstart
+
+### 1. Install OpenClaw
+
+```bash
+curl -fsSL https://openclaw.ai/install.sh | bash
+```
+
+Follow the onboarding wizard (model provider, API key, Gateway config). See
+[OpenClaw getting started](https://docs.openclaw.ai/start/getting-started)
+for details. Verify it's running:
+
+```bash
+openclaw gateway status
+```
+
+### 2. Drop this repo into your workspace
+
+```bash
+cd ~/.openclaw/workspace   # or your configured workspace path
+git clone https://github.com/double-a-works/lecture.git .
+```
+
+(If your workspace already has files, clone elsewhere and copy over what you
+need instead of cloning into it directly.)
+
+### 3. Install pipeline dependencies
+
+The build scripts are plain Python 3, plus:
+
+- A LaTeX distribution with `pdflatex` on `PATH` (e.g. `texlive-full` on
+  Debian/Ubuntu, or a smaller TeX Live install with the `beamer` and
+  `circuitikz` packages).
+- `openpyxl` for the Excel-reading scripts:
+
+```bash
+pip install openpyxl
+```
+
+### 4. Try one build end-to-end
+
+Each `build_*.py` reads from its matching `content_*.py`/`data_*.py` and
+shells out to `pdflatex` to produce a PDF. For example:
+
+```bash
+cd course-content-pipeline
+python3 build_slides.py
+```
+
+Check the script's output path for the resulting PDF. If it fails, it's
+almost always a missing LaTeX package (`beamer`, `circuitikz`) or a missing
+`icon`/`images` asset — the templates use `\IfFileExists` guards so missing
+images won't break the build, but missing LaTeX *packages* will.
+
+### 5. Adapt it
+
+Once you see a build succeed, start replacing `content_*.py`/`data_*.py`
+with your own course material (see "Using this" above).
+
 ## License
 
 MIT — use, adapt, and share freely.
